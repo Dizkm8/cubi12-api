@@ -1,10 +1,18 @@
-version: '3.3'
+version: '3.8'
 
 services:
-  sqldata:
-    image: mcr.microsoft.com/mssql/server
+  postgres:
+    image: postgres:15
+    container_name: cubi12-postgres
+    restart: unless-stopped
     environment:
-    - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
-    - ACCEPT_EULA=Y
+      POSTGRES_DB: cubi12
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: MyStrongPassword123@
     ports:
-    - "5434:1433"
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

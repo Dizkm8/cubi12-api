@@ -1,6 +1,5 @@
 using Cubitwelve.Src.Data;
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv;
 using Cubitwelve.Src.Repositories;
 using Cubitwelve.Src.Repositories.Interfaces;
 using Cubitwelve.Src.Services.Interfaces;
@@ -17,7 +16,6 @@ namespace Cubitwelve.Src.Extensions
     {
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            InitEnvironmentVariables();
             AddAutoMapper(services);
             AddServices(services);
             AddSwaggerGen(services);
@@ -25,11 +23,6 @@ namespace Cubitwelve.Src.Extensions
             AddUnitOfWork(services);
             AddAuthentication(services, config);
             AddHttpContextAccesor(services);
-        }
-
-        private static void InitEnvironmentVariables()
-        {
-            Env.Load();
         }
 
         private static void AddServices(IServiceCollection services)
@@ -52,14 +45,14 @@ namespace Cubitwelve.Src.Extensions
 
         private static void AddDbContext(IServiceCollection services)
         {
-            var connectionUrl = Env.GetString("DB_CONNECTION");
+            var connectionUrl = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
             services.AddDbContext<DataContext>(opt => {
-                opt.UseSqlServer(connectionUrl, sqlServerOpt => {
-                    sqlServerOpt.EnableRetryOnFailure(
+                opt.UseNpgsql(connectionUrl, npgsqlOpt => {
+                    npgsqlOpt.EnableRetryOnFailure(
                         maxRetryCount: 10,
                         maxRetryDelay: System.TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null
+                        errorCodesToAdd: null
                     );
                 });
             });
@@ -77,7 +70,7 @@ namespace Cubitwelve.Src.Extensions
 
         private static IServiceCollection AddAuthentication(IServiceCollection services, IConfiguration config)
         {
-            var jwtSecret = Env.GetString("JWT_SECRET") ??
+            var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ??
                 throw new InvalidJwtException("JWT_SECRET not present in .ENV");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

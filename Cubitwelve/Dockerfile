@@ -15,11 +15,8 @@ WORKDIR /App
 # Copy the published output from the build environment
 COPY --from=build-env /App/out .
 
-# Set environment variables for the ASP.NET Core app
-ENV ASPNETCORE_URLS=http://+:80
-
 # Expose port 80 for the application
-EXPOSE 80
+EXPOSE 8080
 
 # Specify the entry point for the application
 ENTRYPOINT ["dotnet", "Cubitwelve.dll"]

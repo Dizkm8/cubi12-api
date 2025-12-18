@@ -30,6 +30,11 @@ builder.Services.AddCors(options =>
                       });
 });
 
+//if (builder.Environment.IsDevelopment())
+//{
+//    DotNetEnv.Env.Load();
+//}
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

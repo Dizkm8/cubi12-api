@@ -8,7 +8,6 @@ using Cubitwelve.Src.Exceptions;
 using Cubitwelve.Src.Models;
 using Cubitwelve.Src.Repositories.Interfaces;
 using Cubitwelve.Src.Services.Interfaces;
-using DotNetEnv;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Cubitwelve.Src.Services
@@ -31,7 +30,7 @@ namespace Cubitwelve.Src.Services
             _configuration = configuration;
             _mapperService = mapperService;
             _ctxAccesor = ctxAccesor;
-            _jwtSecret = Env.GetString("JWT_SECRET") ?? throw new InvalidJwtException("JWT_SECRET not found");
+            _jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidJwtException("JWT_SECRET not found");
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
